@@ -13,10 +13,12 @@ public class OrderService {
 
     private final ProductService productService;
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
-    public OrderService(ProductService productService, OrderRepository orderRepository){
+    public OrderService(ProductService productService, OrderRepository orderRepository, ProductRepository productRepository){
         this.productService=productService;
         this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
     }
 
     private final List<Order> orders = new ArrayList<>(
@@ -71,15 +73,16 @@ public class OrderService {
                 .orElse(null);*/
 
         Order updatedOrder = orderRepository.findById(id).orElse(null);
+        Product product = productService.getById(order.getProductId());
 
         if(updatedOrder == null){
             return null;
         }
 
             updatedOrder.setQuantity(order.getQuantity());
-            updatedOrder.setStatus(order.getStatus());
-            updatedOrder.setUnitPrice(order.getUnitPrice());
-            updatedOrder.setTotalPrice(order.getTotalPrice());
+            updatedOrder.setUnitPrice(product.getPrice());
+            updatedOrder.setTotalPrice(product.getPrice()*order.getQuantity());
+            updatedOrder.setStatus(OrderStatus.COMPLETED);
 
         return orderRepository.save(updatedOrder);
     }

@@ -1,5 +1,6 @@
 package com.springboot;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,15 +27,22 @@ public class ProductController {
     }
 
 @GetMapping
-    public List<Product> getAll(){
+    public ResponseEntity<List<Product>> getAll(){
 
-    return productService.getAll();
+    List<Product> product = productService.getAll();
 
+    return ResponseEntity.ok(product);
 }
 @GetMapping("/{id}")
-    public Product getById(@PathVariable Long id){
+    public ResponseEntity<Product> getById(@PathVariable Long id){
 
-    return productService.getById(id);
+        Product product = productService.getById(id);
+
+        if(product == null){
+            return ResponseEntity.notFound().build();
+        }
+
+    return ResponseEntity.ok(product);
 
     //2nd alternative to implement as stream instead of foreach
     /* return products.stream(){
@@ -51,19 +59,34 @@ public class ProductController {
 }
 
 @PostMapping()
-    public Product createProduct(@RequestBody Product product){
-    return productService.createProduct(product);
+    public ResponseEntity<Product> createProduct(@RequestBody Product product){
+
+    Product createdProduct = productService.createProduct(product);
+
+    if(createdProduct == null){
+        return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(createdProduct);
 }
 
 @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct){
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct){
 
-    return productService.updateProduct(id,updatedProduct);
+        Product upProduct = productService.updateProduct(id,updatedProduct);
+
+    if(upProduct == null){
+        return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(upProduct);
 }
 @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id){
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
 
     productService.deleteProduct(id);
+
+    return ResponseEntity.noContent().build();
     }
 }
 
