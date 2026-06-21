@@ -1,17 +1,30 @@
 package com.springboot;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public String name;
     public Double price;
     public Integer amount;
+
 
     public Product(Long id, String name, Double price, Integer amount){
         this.id=id;
         this.name=name;
         this.price=price;
         this.amount=amount;
+    }
+
+    public Product() {
+
     }
 
     public Long getId() {

@@ -8,6 +8,8 @@ import java.util.List;
 @Service
 public class ProductService {
 
+    private final ProductRepository productRepository;
+
     private final List<Product> products = new ArrayList<>(
 
             List.of(
@@ -17,53 +19,74 @@ public class ProductService {
 
             )
     );
+    private final OrderRepository orderRepository;
+
+    public ProductService(ProductRepository productRepository, OrderRepository orderRepository) {
+        this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
+    }
 
     public List<Product> getAll(){
-        return products;
+        return productRepository.findAll();
 
     }
 
     public Product getById(Long id) {
 
-        for (Product product : products) {
+        /*for (Product product : products) {
             if (product.getId().equals(id)) {
                 return product;
             }
         }
 
-        return null;
+        return null;  */
+
+        //yukarıdaki algoritmayı findById içerisinde yapıyor.
+
+        return productRepository.findById(id).orElse(null);
+
+        /* return içersindeki şunun karşılığı:
+
+        SELECT *
+        FROM product
+        WHERE id = ?;
+
+        Ama SQL'i Hibernate oluşturuyor.*/
     }
 
     public Product createProduct(Product product){
-        products.add(product);
-        return product;
+        //products.add(product);
+        return productRepository.save(product);
     }
 
     public Product updateProduct(Long id, Product updatedProduct){
-        for(Product product : products){
-            if(product.getId().equals(id)){
+        /*for(Product product : products){
+            if(product.getId().equals(id)){*/
 
-                product.setAmount(updatedProduct.getAmount());
-                product.setPrice(updatedProduct.getPrice());
+        Product product = productRepository.findById(id).orElse(null);
 
-                return product;
-            }
+        if (product == null) {
+            return null;
         }
-        return null;
+
+        product.setAmount(updatedProduct.getAmount());
+        product.setPrice(updatedProduct.getPrice());
+
+        return productRepository.save(product);
     }
 
-    public List<Product> deleteProduct(Long id){
+    public void deleteProduct(Long id){
 
-        Product foundProduct = products.stream()
+        /*Product foundProduct = products.stream()
                 .filter(currentProduct->currentProduct.getId().equals(id))
                 .findFirst()
-                .orElse(null);
+                .orElse(null);*/
 
-        if(foundProduct!=null){
-            products.remove(foundProduct);
+        Product deletedProduct = productRepository.findById(id).orElse(null);
+
+        if(deletedProduct!=null){
+            productRepository.delete(deletedProduct);
         }
-        return products;
     }
-
 
 }

@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: spring-boot
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/springboot_db
+    username: postgres
+    password: 629398
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
