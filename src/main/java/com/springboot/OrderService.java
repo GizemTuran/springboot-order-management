@@ -54,11 +54,8 @@ public class OrderService {
         if (product.getAmount() >= order.getQuantity()) {
 
             order.setProductName(product.getName());
-            order.setQuantity(order.getQuantity());
             order.setUnitPrice(product.getPrice());
-
             order.setTotalPrice(product.getPrice() * order.getQuantity());
-
             order.setStatus(OrderStatus.CREATED);
 
         }
