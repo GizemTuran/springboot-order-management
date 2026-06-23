@@ -1,6 +1,9 @@
 package com.springboot;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "orders")
@@ -9,8 +12,11 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private Long productId;
     private String productName;
+    @NotNull
+    @Positive
     private Integer quantity;
     private Double unitPrice;
     private Double totalPrice;

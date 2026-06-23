@@ -1,5 +1,6 @@
 package com.springboot;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public class OrderController {
     }
 
     @PostMapping()
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) {
 
         Order newOrder = orderService.createOrder(order);
 
@@ -46,7 +47,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order order) {
+    public ResponseEntity<Order> updateOrder(@Valid @PathVariable Long id, @RequestBody Order order) {
 
         Order updateOrder = orderService.updateOrder(id, order);
 
