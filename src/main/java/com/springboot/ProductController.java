@@ -62,6 +62,8 @@ public class ProductController {
 @PostMapping()
     public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product){
 
+    System.out.println("ProductController getById çalıştı");
+
     Product createdProduct = productService.createProduct(product);
 
     if(createdProduct == null){

@@ -33,6 +33,8 @@ public class ProductService {
 
     public Product getById(Long id) {
 
+        System.out.println("ProductService getById çalıştı");
+
         /*for (Product product : products) {
             if (product.getId().equals(id)) {
                 return product;
@@ -43,7 +45,8 @@ public class ProductService {
 
         //yukarıdaki algoritmayı findById içerisinde yapıyor.
 
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException(id));
 
         /* return içersindeki şunun karşılığı:
 
@@ -63,11 +66,8 @@ public class ProductService {
         /*for(Product product : products){
             if(product.getId().equals(id)){*/
 
-        Product product = productRepository.findById(id).orElse(null);
-
-        if (product == null) {
-            return null;
-        }
+        Product product = productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException(id));
 
         product.setAmount(updatedProduct.getAmount());
         product.setPrice(updatedProduct.getPrice());
@@ -82,11 +82,10 @@ public class ProductService {
                 .findFirst()
                 .orElse(null);*/
 
-        Product deletedProduct = productRepository.findById(id).orElse(null);
+        Product deletedProduct = productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException(id));
 
-        if(deletedProduct!=null){
-            productRepository.delete(deletedProduct);
-        }
+        productRepository.delete(deletedProduct);
     }
 
 }

@@ -41,26 +41,31 @@ public class OrderService {
             }
         }
         return null;*/
-        return orderRepository.findById(id).orElse(null);
+        return orderRepository.findById(id).orElseThrow(()-> new OrderNotFoundException(id));
     }
 
     public Order createOrder(Order order) {
 
+        System.out.println("OrderService createOrder çalıştı");
+
         Product product = productService.getById(order.getProductId());
         //product'ın id'si order'ın productId'sine eşit olmalı
 
-        if (product == null) {
-            return null;
-        }
+        System.out.println("Product bulundu: " + product.getName());
 
         if (product.getAmount() >= order.getQuantity()) {
+
+            System.out.println("Stok yetersiz exception fırlatılacak");
+
+            throw new InsufficientStock(product.id);
+        }
 
             order.setProductName(product.getName());
             order.setUnitPrice(product.getPrice());
             order.setTotalPrice(product.getPrice() * order.getQuantity());
             order.setStatus(OrderStatus.CREATED);
 
-        }
+
         return orderRepository.save(order);
 
     }
@@ -72,12 +77,10 @@ public class OrderService {
                 .findFirst()
                 .orElse(null);*/
 
-        Order updatedOrder = orderRepository.findById(id).orElse(null);
-        Product product = productService.getById(order.getProductId());
+        Order updatedOrder = orderRepository.findById(id)
+                .orElseThrow(()->new OrderNotFoundException(id));
 
-        if(updatedOrder == null){
-            return null;
-        }
+        Product product = productService.getById(order.getProductId());
 
             updatedOrder.setQuantity(order.getQuantity());
             updatedOrder.setUnitPrice(product.getPrice());
@@ -98,15 +101,14 @@ public class OrderService {
         //çalışılıyor fakat JPA devreye girdiğinde bunu database'te tablolarda orderlar
         //tutulduğu için id ile direkt select sorgusu ile arama yapılarak gerçekleştiriliyor (notes 20062026 göz at)
 
-        Order deletedOrder = orderRepository.findById(id).orElse(null);
+        Order deletedOrder = orderRepository.findById(id)
+                .orElseThrow(()->new OrderNotFoundException(id));
 
         /*if (deletedOrder!=null){
             orders.remove(deletedOrder);
         }*/
-
-        if(deletedOrder!=null){
             orderRepository.delete(deletedOrder);
-        }
+
 
     }
 
